@@ -1,0 +1,16 @@
+config:
+  aws:region: us-east-1
+  prime-api-gateway:DB_DATABASE:
+    secure: AAABADNrsG1t5wLUg8DiKy58gxgPZ72SWg2sylm9N7iOxXo=
+  prime-api-gateway:DB_HOST:
+    secure: AAABAPfQKh0Efpk4cdFP28sVe5LWKM28xHF1OkY4zNWVvaSILKnLwRmNFNy5C8vrSuPhWQMnI8f/tdx4MuiebX+tis0qLrf0WI/Hha4IE4wOT1iqEqoKDk0x3fWRoTM=
+  prime-api-gateway:DB_PASSWORD:
+    secure: AAABAD4kj7mAPsGD0lipYqeq8B8L4HL6xKEQZMAJLpK7hf+DKyMov0uUPpdbs9Y6b+91Fg==
+  prime-api-gateway:DB_USER:
+    secure: AAABAPJ68SNrSOY0/+RJmRiADmZhErgt7lwQZ6/Zf18tQlVWp4jMbzio
+  prime-api-gateway:NEW_RELIC_LICENSE_KEY:
+    secure: AAABAM3+7s4WvkfJrNYRUfKZBfkLaCdvQ7u97L3yZeR5IO8xT9l9AXj1wIiA35d76UcH1auhmnMrMuvXOkjdwXPAWpjc5RVc
+  prime-api-gateway:eksClusterName: cw-eks-cluster-dev
+  prime-api-gateway:namespace: dev-fargate-prime-api-gateway
+  prime-api-gateway:org: coverwhale
+  pulumi:template: aws-typescript

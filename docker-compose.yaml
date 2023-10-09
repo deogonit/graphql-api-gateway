@@ -1,0 +1,45 @@
+version: "3.10"
+
+services:
+  gateway:
+    container_name: gateway-001
+    build: "./"
+    environment:
+      - NEW_RELIC_ENABLED=false
+      - NODE_ENV=development
+      - DB_HOST=localhost
+      - DB_PORT=3306
+      - DB_USER=coverwhale2
+      - DB_PASSWORD=coverwhale2
+      - DB_DATABASE=coverwhale2
+    restart: always
+    depends_on:
+      - mysql
+    ports:
+      - "4000:4000"
+    profiles:
+      - backend
+    networks:
+      - api-gateway-service-network
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-001
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=coverwhale2
+      - MYSQL_DATABASE=coverwhale2
+      - MYSQL_PASSWORD=coverwhale2
+    volumes:
+      - ./data/mysql:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "3306:3306"
+    profiles:
+      - tests
+      - backend
+    networks:
+      - api-gateway-service-network
+
+networks:
+  api-gateway-service-network:
+    driver: bridge

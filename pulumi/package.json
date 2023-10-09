@@ -1,0 +1,13 @@
+{
+    "name": "prime-api-gateway",
+    "main": "index.ts",
+    "devDependencies": {
+        "@types/node": "^16.18.18"
+    },
+    "dependencies": {
+        "@pulumi/aws": "^5.0.0",
+        "@pulumi/awsx": "^1.0.0",
+        "@pulumi/kubernetes": "^3.24.2",
+        "@pulumi/pulumi": "^3.0.0"
+    }
+}

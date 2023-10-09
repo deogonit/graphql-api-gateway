@@ -1,0 +1,142 @@
+# Global
+app_name: prime-api-gateway
+environment: &environment dev
+namespace: dev-fargate-prime-api-gateway
+full_app_name: &full_app_name api-gateway-dev
+secrets_name: &secrets_name dev-api-gateway-secrets
+environment_file: &environment_file dev-api-gateway-environment-file
+ingress_host: &ingress_host dev-api-gateway.prime.coverwhale.dev
+region: us-east-1
+
+# Deployment
+deployment:
+  replicaCount: 1
+  image:
+    registry: *full_app_name
+    name: *full_app_name
+    pullPolicy: IfNotPresent
+    tag: latest
+
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1024Mi
+    requests:
+      cpu: 500m
+      memory: 1024Mi
+
+  envFrom:
+    - configMapRef:
+        name: *environment_file
+
+  env:
+    - name: DB_HOST
+      valueFrom:
+        secretKeyRef:
+          name: *secrets_name
+          key: DB_HOST
+    - name: DB_DATABASE
+      valueFrom:
+        secretKeyRef:
+          name: *secrets_name
+          key: DB_DATABASE
+    - name: DB_USER
+      valueFrom:
+        secretKeyRef:
+          name: *secrets_name
+          key: DB_USER
+    - name: DB_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: *secrets_name
+          key: DB_PASSWORD
+    - name: NEW_RELIC_LICENSE_KEY
+      valueFrom:
+        secretKeyRef:
+          name: *secrets_name
+          key: NEW_RELIC_LICENSE_KEY
+
+  probes:
+    livenessProbe:
+      enabled: true
+      path: /health
+      initialDelaySeconds: "30"
+      periodSeconds: "10"
+      timeoutSeconds: "30"
+    readinessProbe:
+      enabled: true
+      path: /ready
+      initialDelaySeconds: "60"
+      periodSeconds: "30"
+      timeoutSeconds: "30"
+
+# Service
+service:
+  type: ClusterIP
+  port: 4000
+
+# Autoscaling
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 4
+  targetCPUUtilizationPercentage: 25
+  targetMemoryUtilizationPercentage: 60
+
+# Ingress
+ingress:
+  enabled: true
+  ingressClassName: alb
+  host: *ingress_host
+  path: /
+  pathType: Prefix
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internal
+    alb.ingress.kubernetes.io/healthcheck-path: /health
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/group.name: internal-apps
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: "443"
+
+# ConfigMap
+config_map:
+  data:
+    AUTH0_DOMAIN: dev-0o4avshvvv1fkfb3.us.auth0.com
+    API_IDENTIFIER: https://auth0-dev-api-gateway.prime.coverwhale.dev
+    NEW_RELIC_ENVIRONMENT: *environment
+    DB_PORT: 3306
+    NODE_ENV: development
+
+# ServiceAccount
+service_account:
+  role_arn: arn
+
+# Secrets
+secrets:
+  internal:
+    enabled: true
+    data:
+      DB_HOST: mock
+      DB_DATABASE: mock
+      DB_USER: mock
+      DB_PASSWORD: mock
+      NEW_RELIC_LICENSE_KEY: mock
+  external:
+    enabled: false
+    refreshInterval: "0"
+    data:
+      - secretKey: DB_HOST
+        remoteRef:
+          key: /dev/db/host
+      - secretKey: DB_DATABASE
+        remoteRef:
+          key: /dev/db/database
+      - secretKey: DB_USER
+        remoteRef:
+          key: /dev/db/user
+      - secretKey: DB_PASSWORD
+        remoteRef:
+          key: /dev/db/password
+      - secretKey: NEW_RELIC_LICENSE_KEY
+        remoteRef:
+          key: /dev/newrelic/nr_license_key

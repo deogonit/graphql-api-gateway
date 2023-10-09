@@ -1,0 +1,52 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.environment }}-{{ .Values.app_name }}-deployment
+  namespace: {{ .Values.namespace }}
+  labels:
+    environment: {{ .Values.environment }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.environment }}-{{ .Values.app_name }}
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.deployment.replicaCount }}
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.environment }}-{{ .Values.app_name }}
+        environment: {{ .Values.environment }}
+    spec:
+      serviceAccount: {{ .Values.namespace }}-sa
+      containers:
+        - image: {{ .Values.deployment.image.registry }}/{{ .Values.deployment.image.name }}:{{ .Values.deployment.image.tag }}
+          name: {{ .Values.app_name }}-{{ .Values.environment }}
+          ports:
+            - name: service-port
+              containerPort: {{ .Values.service.port }}
+          {{- if .Values.deployment.probes.livenessProbe.enabled }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.deployment.probes.livenessProbe.path }}
+              port: service-port
+            initialDelaySeconds: {{ .Values.deployment.probes.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.deployment.probes.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.deployment.probes.livenessProbe.timeoutSeconds }}
+          {{- end }}
+          {{- if .Values.deployment.probes.readinessProbe.enabled }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.deployment.probes.readinessProbe.path }}
+              port: service-port
+            initialDelaySeconds: {{ .Values.deployment.probes.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.deployment.probes.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.deployment.probes.readinessProbe.timeoutSeconds }}
+          {{- end }}
+          envFrom:
+            {{- toYaml .Values.deployment.envFrom | nindent 12 }}
+          env:
+            {{- toYaml .Values.deployment.env | nindent 12 }}
+          resources:
+            {{- toYaml .Values.deployment.resources | nindent 12 }}

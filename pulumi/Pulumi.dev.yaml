@@ -1,0 +1,5 @@
+config:
+  aws:region: us-east-1
+  prime-api-gateway:eksClusterName: cw-eks-cluster-dev
+  prime-api-gateway:namespace: dev-fargate-prime-api-gateway
+  pulumi:template: aws-typescript

@@ -1,0 +1,21 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Transport {
+  displayId: Int!
+  equipmentType: String!
+  vehicleIdNumber: String
+  year: Int!
+  make: String!
+  model: String!
+  value: Int!
+  bodyType: String
+  lossPayee: String
+  deductible: Int
+  deductibleType: String!
+}
+
+type Query {
+  vehicles(displayId: Int!): [Transport!]!
+}

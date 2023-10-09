@@ -1,0 +1,27 @@
+{
+    "compilerOptions": {
+        "target": "ES2020",
+        "module": "commonjs",
+        "outDir": "./dist",
+        "baseUrl": "./src",
+        "lib": [
+            "ESNext"
+        ],
+        "types": [
+            "node",
+            "jest"
+        ],
+        "typeRoots": [
+            "./node_modules/@types",
+            "types",
+        ],
+        "strict": true,
+        "moduleResolution": "node",
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "skipLibCheck": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true
+    },
+    "exclude": ["pulumi/", "node_modules", "dist", "**/*spec.ts"]
+}
