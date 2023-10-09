@@ -13,7 +13,7 @@
         "download-dump": "aws s3 cp s3://cw2-uat-mysql-dump ./data/mysql --recursive",
         "prepare": "husky install"
     },
-    "author": "bogdan.vlasyuk@coverwhale.com, alexander.yanchenko@coverwhale.com, dmytro.melnychenko@coverwhale.com",
+    "author": "bogdan.vlasyuk",
     "license": "ISC",
     "dependencies": {
         "@apollo/server": "^4.4.1",
